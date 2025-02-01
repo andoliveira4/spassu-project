@@ -1,0 +1,76 @@
+# .gitignore for C# API Project
+
+# Ignore build and output directories
+[Bb]in/
+[Oo]bj/
+
+# Ignore user-specific files
+*.user
+*.suo
+*.userprefs
+
+# Ignore IDE-specific files
+.vs/
+.idea/
+.vscode/
+*.swp
+*.sln.iml
+
+# Ignore NuGet packages and restore files
+[Nn]u[Gg]et/
+*.nupkg
+packages/
+nuget.exe
+
+# Ignore local development files
+appsettings.Development.json
+
+# Ignore logs and diagnostics
+[Ll]ogs/
+[Tt]emp/
+*.log
+*.csv
+*.dat
+
+# Ignore compiled files
+*.dll
+*.pdb
+*.exe
+
+# Ignore Azure Functions local settings
+local.settings.json
+
+# Ignore test results
+[Tt]est[Rr]esult*/
+[Bb]uild[Ll]og.*
+
+# Ignore ReSharper files
+_ReSharper.*
+*.ReSharper
+
+# Ignore Rider files
+.idea/
+*.sln.iml
+
+# Ignore macOS files
+.DS_Store
+
+# Ignore Docker files
+docker-compose.override.yml
+
+# Ignore coverage reports
+coverage/
+*.coverage
+*.coveragexml
+
+# Ignore SQLite files
+*.db
+*.sqlite
+
+# Ignore dotnet tools
+.dotnet/
+tools/
+
+# Ignore Azure Functions artifacts
+bin/
+obj/
