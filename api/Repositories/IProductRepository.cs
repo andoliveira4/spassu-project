@@ -9,7 +9,7 @@ namespace api.Repositories
     public interface IProductRepository
     {
         IEnumerable<Product> GetAll();
-        Product getById(int id);
+        Product GetById(int id);
         void Add(Product product);
         void Edit(Product product);
         void Delete(int Id);

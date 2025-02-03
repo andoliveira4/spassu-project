@@ -5,6 +5,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using api.Models;
 using api.Repositories;
+using api.Services;
 using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
@@ -16,120 +17,89 @@ namespace api.Controllers
     {
         private readonly ILogger<ProductController> _logger;
         private readonly IProductRepository _productRepository;
-        private readonly IMapper _mapper;
-        
+        private readonly ProductService _productService;
+        private readonly IMapper _mapper;        
 
-        public ProductController(IProductRepository productRepository, ILogger<ProductController> logger, IMapper mapper)
+        public ProductController(IProductRepository productRepository, ILogger<ProductController> logger, IMapper mapper, ProductService productService)
         {
+            _productService = productService;
             _productRepository = productRepository;
             _logger = logger;
             _mapper = mapper;
         }
 
         [HttpGet]
-        public ActionResult<IEnumerable<Product>> GetAll() {
+        public ActionResult<IEnumerable<ProductResponse>> GetAll() {
 
             try {
-                var product = _productRepository.GetAll();
-                return Ok(product);
-            } catch (Exception e) {
 
-                Debug.WriteLine(e);
-                return NotFound();
+                var response = _productService.GetAllProducts();
+                return Ok(response);
+
+            } catch (Exception ex) {
+
+                return NotFound(ex.Message);
             }            
         }
 
         [HttpGet("{id}")]
-        public ActionResult<Product> GetById(int id) {
+        public ActionResult<ProductResponse> GetById(int id) {
 
             try {
-                var product = _productRepository.getById(id);
-                return Ok(product);
-            } catch (Exception e) {
-                Debug.WriteLine(e);
-                return NotFound();
+
+                var response = _productService.GetProductById(id);
+                return Ok(response);
+
+            } catch (Exception ex) {
+                return NotFound(ex.Message);
             }            
         }
 
 
         [HttpPost]
-        public ActionResult<Product> Add(ProductRequest request) {
+        public ActionResult<ProductResponse> Add([FromBody] ProductRequest request) {
 
             try {
 
-                if (!ModelState.IsValid)
-                {
-                    return BadRequest(ModelState);
-                }
+                if (!ModelState.IsValid)                
+                    return BadRequest(ModelState);                
 
-                var product = new Product
-                {
-                    Name = request.Name,
-                    Price = request.Price
-                };
+                var response = _productService.CreateProduct(request);
 
-
-                _productRepository.Add(product);
-                return Ok(product);
-            } catch (Exception e) {
-
-                Debug.WriteLine(e);
-                return NotFound();
+                return Ok(response);
+            } catch (Exception ex) {
+                return NotFound(ex.Message);
             }
             
         }
 
-        [HttpPut]
-        public ActionResult<Product> Update(int id, ProductRequest request) {
+        [HttpPut("{id}")]
+        public ActionResult Update(int id, [FromBody] ProductRequest request) {
 
             try {
 
-                if (!ModelState.IsValid)
-                {
-                    return BadRequest(ModelState);
-                }
+                if (!ModelState.IsValid)                
+                    return BadRequest(ModelState); 
 
-                /*if (id != product.Id)
-                {
-                    return BadRequest();
-                }*/
+                _productService.UpdateProduct(id, request);
+                return NoContent();
 
-                if (_productRepository.getById(id) == null)
-                {
-                    return NotFound();
-                }
-
-                var product = new Product
-                {
-                    Id = id,
-                    Name = request.Name,
-                    Price = request.Price
-                };
-
-                var existingProduct = _productRepository.getById(product.Id);
-                if (existingProduct != null)
-                {
-                    existingProduct.Name = product.Name;
-                    existingProduct.Price = product.Price;
-                }
-
-                return Ok(product);
             } catch (Exception e) {
                 Debug.WriteLine(e);
                 return NotFound();
             }            
         }
 
-        [HttpDelete] 
+        [HttpDelete("{id}")]
         public ActionResult Delete(int id) {
             
             try {
-                _productRepository.Delete(id);
+
+                _productService.DeleteProduct(id);
                 return NoContent();
 
-            } catch (Exception e) {
-                Debug.WriteLine(e);
-                return NotFound();
+            } catch (Exception ex) {
+                return NotFound(ex.Message);
             }   
         }
     }

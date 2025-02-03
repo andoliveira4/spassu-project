@@ -11,11 +11,15 @@ namespace api.Profiles
     {
         public ProductProfile()
         {
-            // Map from CreateProductRequest to Product
-            CreateMap<ProductRequest, Product>();
+            CreateMap<ProductRequest, Product>()
+                .ForMember(dest => dest.Name, opt => opt.MapFrom(src => src.ProductName))
+                .ForMember(dest => dest.Quantity, opt => opt.MapFrom(src => src.ProductQuantity))
+                .ForMember(dest => dest.Price, opt => opt.MapFrom(src => src.ProductPrice));
 
-            // Map from Product to ProductResponse
-            CreateMap<Product, ProductResponse>();
+            CreateMap<Product, ProductResponse>()
+                .ForMember(dest => dest.ProductName, opt => opt.MapFrom(src => src.Name))
+                .ForMember(dest => dest.ProductQuantity, opt => opt.MapFrom(src => src.Quantity))
+                .ForMember(dest => dest.ProductPrice, opt => opt.MapFrom(src => src.Price));
         }
         
     }
